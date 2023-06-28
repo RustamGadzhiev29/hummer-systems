@@ -1,0 +1,27 @@
+[
+    {
+      "id": 1,
+      "name": "Стол 1",
+      "image": "/img/tables/table1.png",
+      "position": null
+    },
+    {
+      "id": 2,
+      "name": "Стол 2",
+      "image": "/img/tables/table2.png",
+      "position": null
+    },
+    {
+      "id": 3,
+      "name": "Стол 3",
+      "image": "/img/tables/table3.png",
+      "position": null
+    },
+    {
+      "id": 4,
+      "name": "Стол 4",
+      "image": "/img/tables/table4.png",
+      "position": null
+    }
+  ]
+  

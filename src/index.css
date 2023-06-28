@@ -15,3 +15,15 @@
 .loading .ant-spin {
   color: #3e79f7;
 }
+.ant-row {
+  display: flex;
+  justify-content: start;
+  margin: 0 0 20px;
+  
+}
+.ant-btn-primary {
+  margin-right: 20px;
+}
+.ant-card-body {
+  padding: 8px;
+}
