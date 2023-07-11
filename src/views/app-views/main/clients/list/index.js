@@ -1,22 +1,32 @@
 import React, { Component } from "react";
-import { Card, Table, Tooltip, message, Button, Modal } from "antd";
+import { Card, Table, Tooltip, message, Button, Modal, Spin } from "antd";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import AvatarStatus from "components/shared-components/AvatarStatus";
 import clientData from "assets/data/client-list.data.json";
 import EditClient from "./EditClient";
 import defaultAvatar from "assets/images/default.jpg";
+import { connect } from "react-redux";
+import {
+  getUsersRequest,
+  deleteClientRequest,
+} from "./../../../../../redux/actions/Users";
+import {
+  getLoadingSelector,
+  getUsersSelector,
+} from "./../../../../../redux/selectors/users-selectors";
 
 class ClientList extends Component {
   state = {
-    clients: clientData,
     clientProfileOpen: false,
     selectedCLient: null,
   };
 
+  componentDidMount() {
+    this.props.getUsersRequest();
+  }
+
   deleteClient = (clientId) => {
-    this.setState({
-      clients: this.state.clients.filter((item) => item.id !== clientId),
-    });
+    this.props.deleteClientRequest(clientId);
     message.success({ content: `Deleted client ${clientId}`, duration: 2 });
   };
 
@@ -35,8 +45,10 @@ class ClientList extends Component {
   };
 
   render() {
-    const { clients, clientProfileOpen, selectedClient } = this.state;
-    // const defaultAvatar = "/img/avatars/default.jpg";
+    const { clientProfileOpen, selectedClient } = this.state;
+    const { users, loading, error } = this.props;
+    console.log("users", this.props.users);
+    console.log("loading", this.props.loading);
 
     const tableColumns = [
       {
@@ -153,7 +165,13 @@ class ClientList extends Component {
     console.log("selectedClient", selectedClient);
     return (
       <Card bodyStyle={{ padding: "0px" }}>
-        <Table columns={tableColumns} dataSource={clients} rowKey="id" />
+        {loading ? (
+          <div className="text-center py-4">
+            <Spin size="large" />
+          </div>
+        ) : (
+          <Table columns={tableColumns} dataSource={users.users} rowKey="id" />
+        )}
         {clientProfileOpen && (
           <EditClient
             data={selectedClient}
@@ -167,5 +185,15 @@ class ClientList extends Component {
     );
   }
 }
-
-export default ClientList;
+const mapStateToProps = (state) => {
+  console.log("state", state);
+  return {
+    users: getUsersSelector(state),
+    loading: getLoadingSelector(state),
+  };
+};
+const mapDispatchToProps = {
+  getUsersRequest,
+  deleteClientRequest,
+};
+export default connect(mapStateToProps, mapDispatchToProps)(ClientList);

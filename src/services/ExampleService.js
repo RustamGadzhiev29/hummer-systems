@@ -17,5 +17,12 @@ exampleService.setPost = function (data) {
     data: data
   })
 }
+exampleService.getUsers = function (params) {
+  return fetch({
+    url: '/users',
+    method: 'get',
+    params
+  })
+}
 
 export default exampleService

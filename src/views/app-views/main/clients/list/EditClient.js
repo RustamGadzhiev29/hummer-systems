@@ -13,7 +13,8 @@ import {
 } from "antd";
 import { UserOutlined } from "@ant-design/icons";
 import Flex from "components/shared-components/Flex";
-
+import { updateClientRequest } from "./../../../../../redux/actions/Users";
+import { connect } from "react-redux";
 export class EditClient extends Component {
   constructor(props) {
     super(props);
@@ -25,26 +26,9 @@ export class EditClient extends Component {
       zipcode: data.address.zipcode,
       avatarUrl: "/img/avatars/thumb-6.jpg",
     };
-    
   }
 
   avatarEndpoint = "https://www.mocky.io/v2/5cc8019d300000980a055e76";
-
-
-  componentDidMount() {
-    this.setInitialData(this.props.data);
-  }
-
-  componentDidUpdate(prevProps) {
-    if (prevProps.data !== this.props.data) {
-      this.setInitialData(this.props.data);
-    }
-  }
-
-  setInitialData = (initialState) => {
-    console.log("initialState", initialState);
-    this.setState(initialState);
-  };
 
   getBase64(img, callback) {
     const reader = new FileReader();
@@ -58,23 +42,26 @@ export class EditClient extends Component {
   };
 
   render() {
-    const { close, open, data } = this.props;
-
-    console.log("bladata", this.state);
+    const { close, open } = this.props;
     const onFinish = (values) => {
       const key = "updatable";
-      message.loading({ content: "Updating...", key });
-      setTimeout(() => {
-        this.setState({
-          name: values.name,
-          email: values.email,
-          userName: values.username,
-          website: values.website,
-          address: values.address,
+
+      const clientData = {
+        ...this.state,
+        name: values.name,
+        email: values.email,
+        username: values.username,
+        website: values.website,
+        address: {
+          street: values.street,
           city: values.city,
           zipcode: values.zipcode,
-        });
-        message.success({ content: "Done!", key, duration: 2 });
+        },
+      };
+      message.loading({ content: "Updating...", key, duration: 2 });
+      setTimeout(() => {
+        this.props.updateClientRequest(clientData);
+        message.success({ content: "Done!", key, duration: 1000 });
         close();
       }, 1000);
     };
@@ -250,5 +237,8 @@ export class EditClient extends Component {
     );
   }
 }
+const mapDispatchToProps = {
+  updateClientRequest,
+};
 
-export default EditClient;
+export default connect(null, mapDispatchToProps)(EditClient);
